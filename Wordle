@@ -1,0 +1,140 @@
+from rich.console import Console
+from rich.text import *
+from random import choice
+
+def main():
+    guessing()
+
+# functions colouring the letter based on whether they're correct or not
+def correct_place(letter):
+    yellow = f"[black on yellow]{letter} "
+    return f"{yellow}"
+
+def correct_letter(letter):
+    green = f"[black on green]{letter} "
+    return f"{green}"
+
+def incorrect_letter(letter):
+    white = f"[black on white]{letter} "
+    return f"{white}"
+
+# choosing a word to be guessed
+def wordle():
+    words = []
+    with open("wordlist.txt", "r") as wordlist:
+        for i in wordlist:
+            words.append(i)
+        given_word = choice(words)
+        given_word = given_word[:5]
+        return given_word
+
+# the actual game
+def guessing():
+    alpha = "abcdefghijklmnopqrstuvwxyz"
+    repeat = True
+    while repeat:
+        wordsguessed = []
+        guess_number = 0
+        letters = ""
+        words = []
+        with open("wordlist.txt", "r") as wordlist:
+            for i in wordlist:
+                words.append(i)
+        answer = wordle()
+        active = True
+        start = "Let's play Wordle!"
+        start2 = "A yellow letter is a correct letter in the wrong place"
+        start3 = "A green letter is a correct letter in the right place"
+        print(f"\n{start.rjust(75)} \n")
+        print(f"{start2.rjust(90)}")
+        print(f"{start3.rjust(89)}\n")
+# guessing a word and if the word is invalid or there are no more guesses
+        while active:
+            guess = input("\nPlease guess a 5 letter word: ")
+            for i in guess:
+                if i not in alpha:
+                    print("Please type in a valid word")
+                    continue
+            if guess:
+                guess_number += 1
+                print(f"\nGuess number {guess_number}")
+                if guess_number == 6 and guess != answer:
+                    print("No guesses left!")
+                    failed = f"The word was: {answer}!\n"
+                    print(failed.center(120, " "))
+                    again = input("Do you want to play again? Y/N  ")
+                    if again == "y" or again == "Y":
+                        break
+                    if again == "n" or again == "N":
+                        print("\nSee you next time!")
+                        repeat = False
+                        break
+            if guess == "x":
+                    print("Exit")
+                    repeat = False
+                    break
+# if the guess is correct, too long or too short
+            if guess == answer:
+                printedguess += " "
+                solved = f"[black on green]{answer}\n"
+                console.print(solved.rjust(120))
+                correct = "\nYou got it!\nCongratuations!\n"
+                print(correct.rjust(120))
+                again = input("Do you want to play again? Y/N  ")
+                if again == "y" or again == "Y":
+                    break
+                if again == "n" or again == "N":
+                    print("\nSee you next time!")
+                    repeat = False
+                    break
+            returnword = ""
+            letter = 0
+            long = "\nThat word is too long!\n"
+            short = "\nThat word is too short!\n"
+            if len(guess) < 5:
+                print(short.rjust(120))
+                guess = input("Please guess a 5 letter word: ")
+                if guess == "x":
+                    print("Exit")
+                    repeat = False
+                    break
+            if len(guess) > 5:
+                print(long.rjust(120))
+                guess = input("Please guess a 5 letter word: ")
+                if guess == "x":
+                    print("Exit")
+                    repeat = False
+                    break
+# if the guess is valid but not correct
+            else:
+                for i in guess:
+                    if i not in letters:
+                        letters += i
+                    if i not in answer:
+                        returnword += incorrect_letter(i)
+                        letter += 1
+                        continue
+                    else:
+                        if i in answer:
+                            if guess[letter] != answer[letter]:
+                                returnword += correct_place(i)
+                                letter += 1
+                                continue
+                            if guess[letter] == answer[letter]:
+                                returnword += correct_letter(i)
+                                letter += 1
+                                continue
+            if guess_number == 6:
+                        print("No guesses left!")
+            print(f"letters guessed: {' '.join(sorted(letters))}")
+# printing out previously guessed words, this does not align properly and I'm unsure why
+            for c in wordsguessed:
+                console.print(c.rjust(150))
+            console.print(returnword.rjust(150))
+            wordsguessed.append(returnword)
+                        
+    
+    
+if __name__ == "__main__":
+    console = Console()
+    main()
