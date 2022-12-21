@@ -1,11 +1,20 @@
 from rich.console import Console
 from rich.text import *
 from random import choice
+from rich.table import Table
+
+def resetTable():
+    global table
+
+    table = Table(title="Letters remaining")
+
+    table.add_column("Released", justify="right", style="cyan", no_wrap=True)
+    table.add_column("Title", style="magenta")
+    table.add_column("Box Office", justify="right", style="green")
 
 def main():
     guessing()
 
-# functions colouring the letter based on whether they're correct or not
 def correct_place(letter):
     yellow = f"[black on yellow]{letter} "
     return f"{yellow}"
@@ -18,7 +27,6 @@ def incorrect_letter(letter):
     white = f"[black on white]{letter} "
     return f"{white}"
 
-# choosing a word to be guessed
 def wordle():
     words = []
     with open("wordlist.txt", "r") as wordlist:
@@ -28,27 +36,26 @@ def wordle():
         given_word = given_word[:5]
         return given_word
 
-# the actual game
 def guessing():
     alpha = "abcdefghijklmnopqrstuvwxyz"
     repeat = True
     while repeat:
+        table = Table(title="Letters remaining")
+        lettersremaining = " a b c d e f\ng h i j k l\nm n o p q r\ns t u v w x y z"
         wordsguessed = []
         guess_number = 0
         letters = ""
         words = []
-        with open("wordlist.txt", "r") as wordlist:
-            for i in wordlist:
-                words.append(i)
         answer = wordle()
         active = True
         start = "Let's play Wordle!"
         start2 = "A yellow letter is a correct letter in the wrong place"
         start3 = "A green letter is a correct letter in the right place"
-        print(f"\n{start.rjust(75)} \n")
-        print(f"{start2.rjust(90)}")
-        print(f"{start3.rjust(89)}\n")
-# guessing a word and if the word is invalid or there are no more guesses
+        print("\n")
+        console.print(start, justify = "center")
+        print("\n")
+        console.print(start2, justify = "center")
+        console.print(start3, justify = "center")
         while active:
             guess = input("\nPlease guess a 5 letter word: ")
             for i in guess:
@@ -57,11 +64,10 @@ def guessing():
                     continue
             if guess:
                 guess_number += 1
-                print(f"\nGuess number {guess_number}")
                 if guess_number == 6 and guess != answer:
                     print("No guesses left!")
                     failed = f"The word was: {answer}!\n"
-                    print(failed.center(120, " "))
+                    print(failed, justify = "center")
                     again = input("Do you want to play again? Y/N  ")
                     if again == "y" or again == "Y":
                         break
@@ -69,17 +75,23 @@ def guessing():
                         print("\nSee you next time!")
                         repeat = False
                         break
+                    else:
+                        print("\nOkay then!")
+                        repeat = False
+                    break
             if guess == "x":
                     print("Exit")
                     repeat = False
                     break
-# if the guess is correct, too long or too short
             if guess == answer:
-                printedguess += " "
-                solved = f"[black on green]{answer}\n"
-                console.print(solved.rjust(120))
+                printedguess = ""
+                for i in guess:
+                    printedguess += i
+                    printedguess += " "
+                solved = f"[black on green]{printedguess}\n"
+                console.print(solved, justify = "center")
                 correct = "\nYou got it!\nCongratuations!\n"
-                print(correct.rjust(120))
+                print(correct, justidy = "center")
                 again = input("Do you want to play again? Y/N  ")
                 if again == "y" or again == "Y":
                     break
@@ -87,29 +99,30 @@ def guessing():
                     print("\nSee you next time!")
                     repeat = False
                     break
+                else:
+                    print("\nOkay then!")
+                    repeat = False
+                    break
             returnword = ""
             letter = 0
             long = "\nThat word is too long!\n"
             short = "\nThat word is too short!\n"
             if len(guess) < 5:
-                print(short.rjust(120))
+                print(short, justfy = "center")
                 guess = input("Please guess a 5 letter word: ")
                 if guess == "x":
                     print("Exit")
                     repeat = False
                     break
             if len(guess) > 5:
-                print(long.rjust(120))
+                print(long, justfy = "center")
                 guess = input("Please guess a 5 letter word: ")
                 if guess == "x":
                     print("Exit")
                     repeat = False
                     break
-# if the guess is valid but not correct
             else:
                 for i in guess:
-                    if i not in letters:
-                        letters += i
                     if i not in answer:
                         returnword += incorrect_letter(i)
                         letter += 1
@@ -126,12 +139,50 @@ def guessing():
                                 continue
             if guess_number == 6:
                         print("No guesses left!")
-            print(f"letters guessed: {' '.join(sorted(letters))}")
-# printing out previously guessed words, this does not align properly and I'm unsure why
             for c in wordsguessed:
-                console.print(c.rjust(150))
-            console.print(returnword.rjust(150))
+                console.print(c, justify="center")
+            console.print(returnword, justify="center")
+            for i in guess:
+                if i in lettersremaining:
+                    lettersremaining = lettersremaining.replace(i, " ")
+            table1 = Table(title="")
+            table2 = Table(title="")
+            table3 = Table(title="")
+            table4 = Table(title="")
+            table5 = Table(title="")
+            table6 = Table(title="")
+            table1.add_column("Letters remaining", justify="center", style="cyan", no_wrap=True)
+            table1.add_row(lettersremaining)
+            table2.add_column("Letters remaining", justify="center", style="cyan", no_wrap=True)
+            table2.add_row(lettersremaining)
+            table3.add_column("Letters remaining", justify="center", style="cyan", no_wrap=True)
+            table3.add_row(lettersremaining)
+            table4.add_column("Letters remaining", justify="center", style="cyan", no_wrap=True)
+            table4.add_row(lettersremaining)
+            table5.add_column("Letters remaining", justify="center", style="cyan", no_wrap=True)
+            table5.add_row(lettersremaining)
+            table6.add_column("Letters remaining", justify="center", style="cyan", no_wrap=True)
+            table6.add_row(lettersremaining)
+            if guess_number == 1:
+                print("\n")
+                console.print(table1, justify = "center")
+            if guess_number == 2:
+                print("\n")
+                console.print(table2, justify = "center")
+            if guess_number == 3:
+                print("\n")
+                console.print(table3, justify = "center")
+            if guess_number == 4:
+                print("\n")
+                console.print(table4, justify = "center")
+            if guess_number == 5:
+                print("\n")
+                console.print(table5, justify = "center")
+            if guess_number == 6:
+                print("\n")
+                console.print(table6, justify = "center")
             wordsguessed.append(returnword)
+            print(f"Guess number {guess_number}")
                         
     
     
