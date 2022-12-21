@@ -67,7 +67,7 @@ def guessing():
                 if guess_number == 6 and guess != answer:
                     print("No guesses left!")
                     failed = f"The word was: {answer}!\n"
-                    print(failed, justify = "center")
+                    console.print(failed, justify = "center")
                     again = input("Do you want to play again? Y/N  ")
                     if again == "y" or again == "Y":
                         break
@@ -163,24 +163,9 @@ def guessing():
             table5.add_row(lettersremaining)
             table6.add_column("Letters remaining", justify="center", style="cyan", no_wrap=True)
             table6.add_row(lettersremaining)
-            if guess_number == 1:
-                print("\n")
-                console.print(table1, justify = "center")
-            if guess_number == 2:
-                print("\n")
-                console.print(table2, justify = "center")
-            if guess_number == 3:
-                print("\n")
-                console.print(table3, justify = "center")
-            if guess_number == 4:
-                print("\n")
-                console.print(table4, justify = "center")
-            if guess_number == 5:
-                print("\n")
-                console.print(table5, justify = "center")
-            if guess_number == 6:
-                print("\n")
-                console.print(table6, justify = "center")
+            tablelist = [table1, table2, table3, table4, table6]
+            print("\n")
+            console.print(tablelist[guess_number-1], justify = "center")
             wordsguessed.append(returnword)
             print(f"Guess number {guess_number}")
                         
